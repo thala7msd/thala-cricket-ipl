@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>7 Thala for a Reason</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background-color: #fefefe;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+    img {
+      max-width: 300px;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <h1>7 Thala for a Reason 🏏</h1>
+  <p>Enter your favorite cricketer below:</p>
+
+  <input id="playerName" placeholder="Player Name" />
+  <input id="jerseyNumber" placeholder="Jersey Number" type="number" />
+  <br>
+  <button onclick="submitForm()">Submit</button>
+
+  <div id="playerImage"></div>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwG-_i-g7PqEimYXMRxA5p_Cn8I7xKLU9B79XsltHiQvsR_E8AA1XuVXnmr1neeFT6v/exec';
+
+    async function submitForm() {
+      const playerName = document.getElementById('playerName').value.trim();
+      const jerseyNumber = document.getElementById('jerseyNumber').value.trim();
+
+      if (!playerName || !jerseyNumber) {
+        alert("Please enter both name and jersey number.");
+        return;
+      }
+
+      // Send to Google Sheet
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify({ playerName, jerseyNumber }),
+        headers: { 'Content-Type': 'application/json' }
+      }).then(() => {
+        const query = encodeURIComponent(playerName + " cricket");
+        const imageContainer = document.getElementById('playerImage');
+        imageContainer.innerHTML = `
+          <p><strong>${playerName}</strong> (Jersey #${jerseyNumber})</p>
+          <a href="https://www.google.com/search?tbm=isch&q=${query}" target="_blank">
+            <img src="https://source.unsplash.com/300x300/?${query}" alt="Player Image"/>
+          </a>
+          <p>(Click image to view more)</p>
+        `;
+      }).catch((error) => {
+        alert("Something went wrong!");
+        console.error("Error:", error);
+      });
+    }
+  </script>
+</body>
+</html>
